@@ -57,14 +57,10 @@ public class Blocco {
 			draw();
 		}
 	}
-	
+
+	//TODO: Passa solo a rotazioni 0 e 2, posizioni non si aggiornano gesu deve sistemare
 	public void rotate() {
-		int toRotate = rotazione;
-		if(rotazione==3){
-			toRotate = 0;
-		}else{
-			toRotate = rotazione++;
-		}
+		int toRotate = (rotazione + 1) % posX.length;
 		boolean occupation = false;
 		for(int i = 0;i<4;i++){
 			if(occupied[posY[toRotate][i]][posX[toRotate][i]]){
@@ -72,22 +68,25 @@ public class Blocco {
 			}
 		}
 		if(!occupation){
+			System.out.println("tolto blocco con rotazione "+rotazione+" aggiunto con rotazione "+toRotate);
+			isFalling = false;
 			dispose();
 			rotazione = toRotate;
 			draw();
+			isFalling = true;
 		}
 	}
-	
+	// TODO: finire i tre metodi
 	public void confirm() {
-		
+		System.out.println("premuto freccia basso");
 	}
 	
 	public void moveLeft() {
-		
+		System.out.println("premuto freccia sx");
 	}
 	
 	public void moveRight() {
-		
+		System.out.println("premuto freccia dx");
 	}
 	
 	public boolean getIsFalling() {

@@ -27,6 +27,8 @@ public class Punta extends Blocco {
 		super.rotazione = rand.nextInt(3);
 
 		// Coordinate della x
+		//TODO le coordinate sono statiche e si rompono non appena il blocco si ruota-sposta, devi usare le coordinate dinamiche
+		// chiedi a chat
 		super.posX = new int[lunghezza][lunghezza];
 
 		super.posX[0][0] = 5;
