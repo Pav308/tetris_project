@@ -59,7 +59,23 @@ public class Blocco {
 	}
 	
 	public void rotate() {
-		
+		int toRotate = rotazione;
+		if(rotazione==3){
+			toRotate = 0;
+		}else{
+			toRotate = rotazione++;
+		}
+		boolean occupation = false;
+		for(int i = 0;i<4;i++){
+			if(occupied[posY[toRotate][i]][posX[toRotate][i]]){
+				occupation = true;
+			}
+		}
+		if(!occupation){
+			dispose();
+			rotazione = toRotate;
+			draw();
+		}
 	}
 	
 	public void confirm() {

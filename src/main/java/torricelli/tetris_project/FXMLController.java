@@ -7,6 +7,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
@@ -27,7 +28,23 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	void onKeyPressed(KeyEvent event) {
-
+		KeyCode code =  event.getCode();
+		if(code == KeyCode.UP) {
+			//Ruota il blocco
+			blocco.rotate();
+		}
+		if(code == KeyCode.DOWN){
+			//Conferma il blocco
+			blocco.confirm();
+		}
+		if(code == KeyCode.LEFT){
+			//Sposta a sinistra il blocco
+			blocco.moveLeft();
+		}
+		if(code == KeyCode.RIGHT){
+			//Sposta a destra il blocco
+			blocco.moveRight();
+		}
 	}
 
 	@Override
@@ -35,7 +52,7 @@ public class FXMLController implements Initializable {
 
 		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
 		for(int i = 0; i < occupied.length; i++)
-			for(int j = 0; j < occupied[i].length; i++)
+			for(int j = 0; j < occupied[j].length; j++)
 				occupied[i][j] = false;
 		
 		game();
