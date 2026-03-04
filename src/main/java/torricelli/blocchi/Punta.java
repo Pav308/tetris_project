@@ -18,8 +18,8 @@ public class Punta extends Blocco {
 		super.pane = new Pane[lunghezza];
 		for (int i = 0; i < super.pane.length; i++) {
 
-			super.pane[0] = new Pane();
-			super.pane[0].setBackground(new Background(new BackgroundFill(Color.VIOLET, null, null)));
+			super.pane[i] = new Pane();
+			super.pane[i].setBackground(new Background(new BackgroundFill(Color.VIOLET, null, null)));
 		}
 		
 		super.rotazione = rand.nextInt(3);

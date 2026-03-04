@@ -34,14 +34,20 @@ public class Blocco {
 	// Metodo per far cadere il blocco
 	public void fall() {
 
-		for (int i = 0; i < lunghezza; i++)
-			if (posY[rotazione][i]++ > griglia.getRowCount())
-				dispose();
+		for (int i = 0; i < posY[rotazione].length; i++)
+			if ((posY[rotazione][i] + 1) > griglia.getRowCount()) {
+
+				isFalling = false;
+			}
 
 		if (isFalling) {
 
-			for (int i = 0; i < posY[rotazione].length; i++)
-				posY[rotazione][i]++;
+			dispose();
+
+			for (int j = 0; j < posY[rotazione].length; j++)
+				posY[rotazione][j]++;
+
+			draw();
 		}
 	}
 }

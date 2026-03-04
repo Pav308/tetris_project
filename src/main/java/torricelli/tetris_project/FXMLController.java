@@ -36,17 +36,15 @@ public class FXMLController implements Initializable {
 	public void game() {
 
 		Blocco blocco = new Punta(mainGrid);
+		blocco.draw();
 		Timeline timeline = new Timeline(
 
 				new KeyFrame(Duration.seconds(1), e -> {
 
-					blocco.draw();
-				}), new KeyFrame(Duration.seconds(2), e -> {
-
-					blocco.dispose();
+					blocco.fall();
 				}));
 		
-		timeline.setCycleCount(10);
+		timeline.setCycleCount(20);
 		timeline.play();
 	}
 }
