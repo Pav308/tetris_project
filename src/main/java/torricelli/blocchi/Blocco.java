@@ -11,6 +11,7 @@ public class Blocco {
 	protected GridPane griglia;
 	protected Random rand;
 	protected Pane[] pane;
+	protected boolean[][] occupied;
 
 	protected int lunghezza;
 	protected int rotazione;
@@ -34,6 +35,7 @@ public class Blocco {
 	// Metodo per far cadere il blocco
 	public void fall() {
 
+		// Controllo che il blocco non cada sotto la griglia
 		for (int i = 0; i < posY[rotazione].length; i++)
 			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()) {
 
@@ -41,14 +43,39 @@ public class Blocco {
 				return;
 			}
 
+		// Se il blocco sta cadendo cadendo
 		if (isFalling) {
 
+			// Cancello il blocco vecchio
 			dispose();
 
+			// Aumento la posizione
 			for (int j = 0; j < posY[rotazione].length; j++)
 				posY[rotazione][j]++;
 
+			// Disegno il nuovo blocco
 			draw();
 		}
+	}
+	
+	public void rotate() {
+		
+	}
+	
+	public void confirm() {
+		
+	}
+	
+	public void moveLeft() {
+		
+	}
+	
+	public void moveRight() {
+		
+	}
+	
+	public boolean getIsFalling() {
+
+		return this.isFalling;
 	}
 }

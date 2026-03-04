@@ -16,6 +16,9 @@ import torricelli.blocchi.Test;
 
 public class FXMLController implements Initializable {
 
+	private Blocco blocco;
+	private boolean[][] occupied;
+	
 	@FXML
 	private GridPane mainGrid;
 
@@ -30,21 +33,36 @@ public class FXMLController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 
+		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
+		for(int i = 0; i < occupied.length; i++)
+			for(int j = 0; j < occupied[i].length; i++)
+				occupied[i][j] = false;
+		
 		game();
 	}
 
 	public void game() {
 
-		Blocco blocco = new Punta(mainGrid);
-		blocco.draw();
+		spawnBlock();
 		Timeline timeline = new Timeline(
 
 				new KeyFrame(Duration.seconds(1), e -> {
 
-					blocco.fall();
+					if(blocco.getIsFalling())
+						blocco.fall();
+					
+					else
+						spawnBlock();
+					
 				}));
-		
-		timeline.setCycleCount(20);
+
+		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
+	}
+	
+	public void spawnBlock() {
+		
+		blocco = new Punta(mainGrid, occupied);
+		blocco.draw();
 	}
 }

@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 public class Punta extends Blocco {
 
-	public Punta(GridPane griglia) {
+	public Punta(GridPane griglia, boolean[][] occupied) {
 
 		super.lunghezza = 4;
 		super.griglia = griglia;
@@ -22,6 +22,8 @@ public class Punta extends Blocco {
 			super.pane[i].setBackground(new Background(new BackgroundFill(Color.VIOLET, null, null)));
 		}
 		
+		super.occupied = occupied;
+		
 		super.rotazione = rand.nextInt(3);
 
 		// Coordinate della x
@@ -31,14 +33,17 @@ public class Punta extends Blocco {
 		super.posX[0][1] = 4;
 		super.posX[0][2] = 5;
 		super.posX[0][3] = 6;
+
 		super.posX[1][0] = 5;
 		super.posX[1][1] = 4;
 		super.posX[1][2] = 5;
 		super.posX[1][3] = 5;
+		
 		super.posX[2][0] = 4;
 		super.posX[2][1] = 5;
 		super.posX[2][2] = 6;
 		super.posX[2][3] = 5;
+		
 		super.posX[3][0] = 5;
 		super.posX[3][1] = 5;
 		super.posX[3][2] = 6;
@@ -51,14 +56,17 @@ public class Punta extends Blocco {
 		super.posY[0][1] = 2;
 		super.posY[0][2] = 2;
 		super.posY[0][3] = 2;
+		
 		super.posY[1][0] = 1;
 		super.posY[1][1] = 2;
 		super.posY[1][2] = 2;
 		super.posY[1][3] = 3;
+		
 		super.posY[2][0] = 2;
 		super.posY[2][1] = 2;
 		super.posY[2][2] = 2;
 		super.posY[2][3] = 3;
+		
 		super.posY[3][0] = 1;
 		super.posY[3][1] = 2;
 		super.posY[3][2] = 2;
