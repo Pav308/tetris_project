@@ -53,11 +53,11 @@ public class FXMLController implements Initializable {
 
 		mainGrid.setFocusTraversable(true);
 
-		mainGrid.sceneProperty().addListener((obs, oldScene, newScene) -> {
-			if (newScene != null) {
-				newScene.setOnKeyPressed(this::onKeyPressed);
-			}
-		});
+		// Registro l'handler UNA SOLA VOLTA
+		mainGrid.setOnKeyPressed(this::onKeyPressed);
+
+		// Forzo il focus sulla griglia
+		mainGrid.requestFocus();
 
 		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
 		for(int i = 0; i < occupied.length; i++)

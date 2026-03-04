@@ -58,7 +58,7 @@ public class Blocco {
 		}
 	}
 
-	//TODO: Passa solo a rotazioni 0 e 2, posizioni non si aggiornano gesu deve sistemare
+	//TODO: posizioni non si aggiornano gesu deve sistemare
 	public void rotate() {
 		int toRotate = (rotazione + 1) % posX.length;
 		boolean occupation = false;
