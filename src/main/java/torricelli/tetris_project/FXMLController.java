@@ -1,8 +1,8 @@
 package torricelli.tetris_project;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -13,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import torricelli.blocchi.Blocco;
 import torricelli.blocchi.Punta;
-import torricelli.blocchi.Test;
 
 public class FXMLController implements Initializable {
 
@@ -28,9 +27,10 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	void onKeyPressed(KeyEvent event) {
-		KeyCode code =  event.getCode();
+		KeyCode code = event.getCode();
 		if(code == KeyCode.UP) {
 			//Ruota il blocco
+			System.out.println("rotazione");
 			blocco.rotate();
 		}
 		if(code == KeyCode.DOWN){
@@ -47,13 +47,21 @@ public class FXMLController implements Initializable {
 		}
 	}
 
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 
+		mainGrid.setFocusTraversable(true);
+
+		mainGrid.sceneProperty().addListener((obs, oldScene, newScene) -> {
+			if (newScene != null) {
+				newScene.setOnKeyPressed(this::onKeyPressed);
+			}
+		});
+
 		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
 		for(int i = 0; i < occupied.length; i++)
-			for(int j = 0; j < occupied[j].length; j++)
-				occupied[i][j] = false;
+            Arrays.fill(occupied[i], false);
 		
 		game();
 	}
