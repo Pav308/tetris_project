@@ -35,7 +35,7 @@ public class FXMLController implements Initializable {
 		}
 		if(code == KeyCode.DOWN){
 			//Conferma il blocco
-			blocco.confirm();
+			blocco.moveDown();
 		}
 		if(code == KeyCode.LEFT){
 			//Sposta a sinistra il blocco
@@ -44,6 +44,9 @@ public class FXMLController implements Initializable {
 		if(code == KeyCode.RIGHT){
 			//Sposta a destra il blocco
 			blocco.moveRight();
+		}
+		if(code == KeyCode.SPACE){
+			blocco.confirm();
 		}
 	}
 

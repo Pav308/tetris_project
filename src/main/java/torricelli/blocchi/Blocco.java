@@ -35,23 +35,53 @@ public class Blocco {
 			}
 		}
 	}
+	public void editPosX(boolean direction){
+		// true: -1, verso sinistra
+		// false: +1, verso destra
+		for(int i = 0 ; i<posX.length;i++){
+			for(int j = 0 ; j<posX[i].length;j++){
+				if(((posX[rotazione][j] + 1) >= griglia.getColumnCount() && !direction) || ((posX[rotazione][j]-1)<0 && direction) ||
+						occupied[posY[rotazione][j] + 1][posX[rotazione][j]]){
+					return;
+				}
+				dispose();
+				if(direction){
+					posX[i][j] -= 1;
+
+				}else{
+					posX[i][j] += 1;
+				}
+				draw();
+			}
+		}
+	}
 
 	// Metodo per far cadere il blocco
 	public void fall() {
 
-		// Controllo che il blocco non cada sotto la griglia
+		// Controllo che il blocco non cada sotto la griglia e che le celle non sono occupate
 		for (int i = 0; i < posY[rotazione].length; i++)
-			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()) {
+			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()
+					|| occupied[posY[rotazione][i] + 1][posX[rotazione][i]]) {
+
 				isFalling = false;
+
+				// Imposto che le celle sono occupate
+				for (int j = 0; j < posY[rotazione].length; j++)
+					occupied[posY[rotazione][j]][posX[rotazione][j]] = true;
+
 				return;
 			}
 
-		// Se il blocco sta cadendo
+		// Se il blocco sta cadendo cadendo
 		if (isFalling) {
+
 			// Cancello il blocco vecchio
 			dispose();
+
 			// Aumento la posizione
 			editPosY();
+
 			// Disegno il nuovo blocco
 			draw();
 		}
@@ -77,16 +107,24 @@ public class Blocco {
 		}
 	}
 	// TODO: finire i tre metodi quando fatti togli sysout
-	public void confirm() {
+	public void moveDown() {
 		System.out.println("premuto freccia basso");
+		fall();
+	}
+
+	public void confirm(){
+		System.out.println("premuto spazio");
 	}
 	
 	public void moveLeft() {
 		System.out.println("premuto freccia sx");
+		editPosX(true);
+
 	}
 	
 	public void moveRight() {
 		System.out.println("premuto freccia dx");
+		editPosX(false);
 	}
 	
 	public boolean getIsFalling() {
