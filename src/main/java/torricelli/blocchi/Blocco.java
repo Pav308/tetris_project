@@ -35,9 +35,10 @@ public class Blocco {
 	public void fall() {
 
 		for (int i = 0; i < posY[rotazione].length; i++)
-			if ((posY[rotazione][i] + 1) > griglia.getRowCount()) {
+			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()) {
 
 				isFalling = false;
+				return;
 			}
 
 		if (isFalling) {
