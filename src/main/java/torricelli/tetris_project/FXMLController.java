@@ -34,7 +34,6 @@ public class FXMLController implements Initializable {
 		KeyCode code = event.getCode();
 		if (code == KeyCode.UP) {
 			// Ruota il blocco
-			System.out.println("rotazione");
 			blocco.rotate();
 		}
 		if (code == KeyCode.DOWN) {
