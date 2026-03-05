@@ -2,6 +2,7 @@ package torricelli.tetris_project;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -12,13 +13,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import torricelli.blocchi.Blocco;
+import torricelli.blocchi.Lungo;
 import torricelli.blocchi.Punta;
+import torricelli.blocchi.Quadrato;
 
 public class FXMLController implements Initializable {
 
+	private Random rand = new Random();
 	private Blocco blocco;
 	private boolean[][] occupied;
-	
+
 	@FXML
 	private GridPane mainGrid;
 
@@ -28,28 +32,27 @@ public class FXMLController implements Initializable {
 	@FXML
 	void onKeyPressed(KeyEvent event) {
 		KeyCode code = event.getCode();
-		if(code == KeyCode.UP) {
-			//Ruota il blocco
+		if (code == KeyCode.UP) {
+			// Ruota il blocco
 			System.out.println("rotazione");
 			blocco.rotate();
 		}
-		if(code == KeyCode.DOWN){
-			//Conferma il blocco
+		if (code == KeyCode.DOWN) {
+			// Conferma il blocco
 			blocco.moveDown();
 		}
-		if(code == KeyCode.LEFT){
-			//Sposta a sinistra il blocco
+		if (code == KeyCode.LEFT) {
+			// Sposta a sinistra il blocco
 			blocco.moveLeft();
 		}
-		if(code == KeyCode.RIGHT){
-			//Sposta a destra il blocco
+		if (code == KeyCode.RIGHT) {
+			// Sposta a destra il blocco
 			blocco.moveRight();
 		}
-		if(code == KeyCode.SPACE){
+		if (code == KeyCode.SPACE) {
 			blocco.confirm();
 		}
 	}
-
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -63,9 +66,9 @@ public class FXMLController implements Initializable {
 		mainGrid.requestFocus();
 
 		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
-		for(int i = 0; i < occupied.length; i++)
-            Arrays.fill(occupied[i], false);
-		
+		for (int i = 0; i < occupied.length; i++)
+			Arrays.fill(occupied[i], false);
+
 		game();
 	}
 
@@ -76,21 +79,38 @@ public class FXMLController implements Initializable {
 
 				new KeyFrame(Duration.seconds(1), e -> {
 
-					if(blocco.getIsFalling())
+					if (blocco.getIsFalling())
 						blocco.fall();
-					
+
 					else
 						spawnBlock();
-					
+
 				}));
 
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
 	}
-	
+
 	public void spawnBlock() {
-		
-		blocco = new Punta(mainGrid, occupied);
+
+		switch (rand.nextInt(3)) {
+
+		case 0:
+
+			blocco = new Punta(mainGrid, occupied);
+			break;
+
+		case 1:
+
+			blocco = new Lungo(mainGrid, occupied);
+			break;
+			
+		case 2:
+			
+			blocco = new Quadrato(mainGrid, occupied);
+			break;
+		}
+
 		blocco.draw();
 	}
 }

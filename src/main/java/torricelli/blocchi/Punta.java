@@ -13,6 +13,7 @@ public class Punta extends Blocco {
 	public Punta(GridPane griglia, boolean[][] occupied) {
 
 		super.lunghezza = 4;
+		super.nrotazione = 4;
 		super.griglia = griglia;
 		super.rand = new Random();
 		super.pane = new Pane[lunghezza];
@@ -27,7 +28,7 @@ public class Punta extends Blocco {
 		super.rotazione = rand.nextInt(3);
 
 		// Coordinate della x
-		super.posX = new int[lunghezza][lunghezza];
+		super.posX = new int[nrotazione][lunghezza];
 
 		super.posX[0][0] = 5;
 		super.posX[0][1] = 4;
@@ -50,7 +51,7 @@ public class Punta extends Blocco {
 		super.posX[3][3] = 5;
 
 		// Coordinate della y
-		super.posY = new int[lunghezza][lunghezza];
+		super.posY = new int[nrotazione][lunghezza];
 
 		super.posY[0][0] = 1;
 		super.posY[0][1] = 2;

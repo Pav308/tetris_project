@@ -12,6 +12,7 @@ public class Blocco {
 	protected boolean[][] occupied;
 
 	protected int lunghezza;
+	protected int nrotazione;
 	protected int rotazione;
 	protected int[][] posX;
 	protected int[][] posY;
@@ -27,28 +28,41 @@ public class Blocco {
 	public void dispose() {
 		griglia.getChildren().removeAll(pane);
 	}
-	//Abbassa di uno la posizione Y di ogni blocco per ogni rotazione possibile
-	public void editPosY(){
-		for(int i = 0 ; i<posY.length;i++){
-			for(int j = 0 ; j<posY[i].length;j++){
+
+	// Abbassa di uno la posizione Y di ogni blocco per ogni rotazione possibile
+	public void editPosY() {
+		for (int i = 0; i < posY.length; i++) {
+			for (int j = 0; j < posY[i].length; j++) {
 				posY[i][j] += 1;
 			}
 		}
 	}
-	public void editPosX(boolean direction){
+
+	public void editPosX(boolean direction) {
 		// true: -1, verso sinistra
 		// false: +1, verso destra
-		for(int i = 0 ; i<posX.length;i++){
-			for(int j = 0 ; j<posX[i].length;j++){
-				if(((posX[rotazione][j] + 1) >= griglia.getColumnCount() && !direction) || ((posX[rotazione][j]-1)<0 && direction) ||
-						occupied[posY[rotazione][j] + 1][posX[rotazione][j]]){
-					return;
-				}
+		for (int i = 0; i < posX.length; i++) {
+
+			if (((posX[rotazione][i] + 1) >= griglia.getColumnCount() && !direction)
+					|| ((posX[rotazione][i] - 1) < 0 && direction)
+					|| (occupied[posY[rotazione][i]][posX[rotazione][i] + 1] && !direction)
+					|| (occupied[posY[rotazione][i]][posX[rotazione][i] - 1] && direction)) {
+
+				return;
+			}
+		}
+
+		for (int i = 0; i < posX.length; i++) {
+
+			for (int j = 0; j < posX[i].length; j++) {
+
 				dispose();
-				if(direction){
+				if (direction) {
+
 					posX[i][j] -= 1;
 
-				}else{
+				} else {
+
 					posX[i][j] += 1;
 				}
 				draw();
@@ -59,8 +73,10 @@ public class Blocco {
 	// Metodo per far cadere il blocco
 	public void fall() {
 
-		// Controllo che il blocco non cada sotto la griglia e che le celle non sono occupate
+		// Controllo che il blocco non cada sotto la griglia e che le celle non sono
+		// occupate
 		for (int i = 0; i < posY[rotazione].length; i++)
+
 			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()
 					|| occupied[posY[rotazione][i] + 1][posX[rotazione][i]]) {
 
@@ -88,17 +104,23 @@ public class Blocco {
 	}
 
 	public void rotate() {
+
 		int toRotate = (rotazione + 1) % posX.length;
-		boolean occupation = false; //controlla se vuoto
-		for(int i = 0;i<posY[rotazione].length;i++){
-			if(occupied[posY[toRotate][i]][posX[toRotate][i]]){
+		boolean occupation = false; // controlla se vuoto
+
+		for (int i = 0; i < posY[rotazione].length; i++) {
+			
+			if (occupied[posY[toRotate][i]][posX[toRotate][i]]) {
+
 				occupation = true;
 				System.out.println("[!] Rotate: Tentato, blocco non libero.");
 			}
 		}
-		if(!occupation){
+
+		if (!occupation) {
+
 			// TODO togli sysout
-			System.out.println("tolto blocco con rotazione "+rotazione+" aggiunto con rotazione "+toRotate);
+			System.out.println("tolto blocco con rotazione " + rotazione + " aggiunto con rotazione " + toRotate);
 			isFalling = false;
 			dispose();
 			rotazione = toRotate;
@@ -106,27 +128,33 @@ public class Blocco {
 			isFalling = true;
 		}
 	}
+
 	// TODO: finire i tre metodi quando fatti togli sysout
 	public void moveDown() {
+
 		System.out.println("premuto freccia basso");
 		fall();
 	}
 
-	public void confirm(){
+	public void confirm() {
+
 		System.out.println("premuto spazio");
+		for(int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++)
+			fall();
 	}
-	
+
 	public void moveLeft() {
+
 		System.out.println("premuto freccia sx");
 		editPosX(true);
-
 	}
-	
+
 	public void moveRight() {
+
 		System.out.println("premuto freccia dx");
 		editPosX(false);
 	}
-	
+
 	public boolean getIsFalling() {
 
 		return this.isFalling;
