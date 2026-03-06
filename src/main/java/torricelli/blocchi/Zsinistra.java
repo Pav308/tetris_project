@@ -1,5 +1,58 @@
 package torricelli.blocchi;
 
-public class Zsinistra {
+import java.util.Random;
 
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+
+public class Zsinistra extends Blocco {
+
+	public Zsinistra(GridPane griglia, boolean[][] occupied) {
+
+		super.lunghezza = 4;
+		super.nrotazione = 2;
+		super.griglia = griglia;
+		super.rand = new Random();
+		super.pane = new Pane[lunghezza];
+		for (int i = 0; i < super.pane.length; i++) {
+
+			super.pane[i] = new Pane();
+			super.pane[i].setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+		}
+
+		super.occupied = occupied;
+
+		super.rotazione = rand.nextInt(nrotazione);
+
+		// Coordinate della x
+		super.posX = new int[nrotazione][lunghezza];
+
+		super.posX[0][0] = 5;
+		super.posX[0][1] = 5;
+		super.posX[0][2] = 6;
+		super.posX[0][3] = 6;
+
+		super.posX[1][0] = 5;
+		super.posX[1][1] = 6;
+		super.posX[1][2] = 4;
+		super.posX[1][3] = 5;
+
+		// Coordinate della y
+		super.posY = new int[nrotazione][lunghezza];
+
+		super.posY[0][0] = 1;
+		super.posY[0][1] = 2;
+		super.posY[0][2] = 2;
+		super.posY[0][3] = 3;
+
+		super.posY[1][0] = 1;
+		super.posY[1][1] = 1;
+		super.posY[1][2] = 2;
+		super.posY[1][3] = 2;
+
+		super.isFalling = true;
+	}
 }
