@@ -25,7 +25,7 @@ public class Quadrato extends Blocco{
 
 		super.occupied = occupied;
 
-		super.rotazione = rand.nextInt(3);
+		super.rotazione = rand.nextInt(nrotazione);
 
 		// Coordinate della x
 		super.posX = new int[nrotazione][lunghezza];

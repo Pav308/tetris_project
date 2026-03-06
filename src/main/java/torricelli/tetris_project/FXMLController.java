@@ -13,9 +13,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import torricelli.blocchi.Blocco;
+import torricelli.blocchi.Ldestra;
+import torricelli.blocchi.Lsinistra;
 import torricelli.blocchi.Lungo;
 import torricelli.blocchi.Punta;
 import torricelli.blocchi.Quadrato;
+import torricelli.blocchi.Zdestra;
+import torricelli.blocchi.Zsinistra;
 
 public class FXMLController implements Initializable {
 
@@ -93,7 +97,7 @@ public class FXMLController implements Initializable {
 
 	public void spawnBlock() {
 
-		switch (rand.nextInt(3)) {
+		switch (rand.nextInt(7)) {
 
 		case 0:
 
@@ -108,6 +112,26 @@ public class FXMLController implements Initializable {
 		case 2:
 			
 			blocco = new Quadrato(mainGrid, occupied);
+			break;
+			
+		case 3:
+			
+			blocco = new Lsinistra(mainGrid, occupied);
+			break;
+			
+		case 4:
+			
+			blocco = new Ldestra(mainGrid, occupied);
+			break;
+			
+		case 5:
+			
+			blocco = new Zsinistra(mainGrid, occupied);
+			break;
+			
+		case 6:
+			
+			blocco = new Zdestra(mainGrid, occupied);
 			break;
 		}
 

@@ -20,22 +20,23 @@ public class Blocco {
 
 	// Metodo per "disegnare" il blocco
 	public void draw() {
+
 		for (int i = 0; i < pane.length; i++)
 			griglia.add(pane[i], posX[rotazione][i], posY[rotazione][i]);
 	}
 
 	// Metodo per "cancellare" il blocco
 	public void dispose() {
+
 		griglia.getChildren().removeAll(pane);
 	}
 
 	// Abbassa di uno la posizione Y di ogni blocco per ogni rotazione possibile
 	public void editPosY() {
-		for (int i = 0; i < posY.length; i++) {
-			for (int j = 0; j < posY[i].length; j++) {
+
+		for (int i = 0; i < posY.length; i++)
+			for (int j = 0; j < posY[i].length; j++)
 				posY[i][j] += 1;
-			}
-		}
 	}
 
 	public void editPosX(boolean direction) {
