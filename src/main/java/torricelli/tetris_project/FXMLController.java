@@ -26,6 +26,9 @@ public class FXMLController implements Initializable {
 	private Random rand = new Random();
 	private Blocco blocco;
 	private boolean[][] occupied;
+	private final String GREEN = "\u001B[32m";
+	private final String RESET = "\u001B[0m";
+	private final String YELLOW = "\u001B[33m";
 
 	@FXML
 	private GridPane mainGrid;
@@ -95,7 +98,6 @@ public class FXMLController implements Initializable {
 	}
 
 	public void spawnBlock() {
-
 		switch (rand.nextInt(7)) {
 
 		case 0:
@@ -133,7 +135,7 @@ public class FXMLController implements Initializable {
 			blocco = new Zdestra(mainGrid, occupied);
 			break;
 		}
-
+		System.out.println(YELLOW + "[SPAWN]" + GREEN + " Spawn di un blocco di tipo: " + blocco.getClass().getName());
 		blocco.draw();
 	}
 }

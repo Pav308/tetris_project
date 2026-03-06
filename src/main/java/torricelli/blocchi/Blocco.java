@@ -67,7 +67,7 @@ public class Blocco {
 
 			// Controllo se la cella di destinazione è già occupata
 			if (occupied[currentY][nextX]) {
-				System.out.println(RED+"MOVE: Non permesso, occupato.\nMOVE: "+getBlockCoords());
+				System.out.println(GREEN+ "[END]"+YELLOW+" Raggiunta fine, conferma: "+getBlockCoords());
 				return; // Interrompe il metodo: c'è un ostacolo
 			}
 		}
@@ -95,13 +95,11 @@ public class Blocco {
 
 			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()
 					|| occupied[posY[rotazione][i] + 1][posX[rotazione][i]]) {
-				System.out.println(RED+"[!] DOWN: Non permesso, fuori griglia.\n"+getBlockCoords());
 				isFalling = false;
 
 				// Imposto che le celle sono occupate
 				for (int j = 0; j < posY[rotazione].length; j++)
 					occupied[posY[rotazione][j]][posX[rotazione][j]] = true;
-				System.out.println(RED+"[!] DOWN: Non permesso, celle occupate.\n"+getBlockCoords());
 				return;
 			}
 
@@ -115,6 +113,7 @@ public class Blocco {
 			editPosY();
 
 			// Disegno il nuovo blocco
+			System.out.println(YELLOW+"FALL: "+getBlockCoords());
 			draw();
 		}
 	}
@@ -147,23 +146,23 @@ public class Blocco {
 
 	// TODO: finire i tre metodi quando fatti togli sysout
 	public void moveDown() {
-		System.out.println(GREEN+"DOWN: "+getBlockCoords());
+		System.out.println(YELLOW+"DOWN: "+getBlockCoords());
 		fall();
 	}
 
 	public void confirm() {
 		for(int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++)
 			fall();
-		System.out.println(GREEN+"CONFIRM: "+getBlockCoords());
+		System.out.println(YELLOW+"CONFIRM: "+getBlockCoords());
 	}
 
 	public void moveLeft() {
-		System.out.println(GREEN+"LEFT: "+getBlockCoords());
+		System.out.println(YELLOW+"LEFT: "+getBlockCoords());
 		editPosX(true);
 	}
 
 	public void moveRight() {
-		System.out.println(GREEN+"RIGHT: "+getBlockCoords());
+		System.out.println(YELLOW+"RIGHT: "+getBlockCoords());
 		editPosX(false);
 	}
 
@@ -171,6 +170,6 @@ public class Blocco {
 		return this.isFalling;
 	}
 	public String getBlockCoords(){
-		return YELLOW+"[POSIZIONE BLOCCO]"+GREEN+" X:"+posX[rotazione][0]+" Y:"+posX[rotazione][0]+RESET;
+		return RED+"[POSIZIONE BLOCCO]"+GREEN+" X:"+posX[rotazione][0]+" Y:"+posY[rotazione][0]+RESET;
 	}
 }
