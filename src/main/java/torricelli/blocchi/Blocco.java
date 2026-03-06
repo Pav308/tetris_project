@@ -17,6 +17,7 @@ public class Blocco {
 	protected int[][] posX;
 	protected int[][] posY;
 	protected boolean isFalling;
+	protected boolean confirmed = false;
 	protected final String RED = "\u001B[31m";
 	protected final String GREEN = "\u001B[32m";
 	protected final String YELLOW = "\u001B[33m";
@@ -44,46 +45,61 @@ public class Blocco {
 	}
 
 	public void editPosX(boolean direction) {
-		// 1. DEFINIAMO L'OFFSET (Spostamento)
-		// Invece del ternario, usiamo un if per decidere se sommare 1 o -1
-		int offset;
-		if (direction) {
-			offset = -1; // Sinistra
-		} else {
-			offset = 1;  // Destra
-		}
 
-		// 2. FASE DI CONTROLLO (POSSO MUOVERMI?)
-		// Cicliamo su ogni quadratino della rotazione attuale
-		for (int j = 0; j < posX[rotazione].length; j++) {
-			int nextX = posX[rotazione][j] + offset;
-			int currentY = posY[rotazione][j];
+		if (!confirmed) {
 
-			// Controllo se esce dai bordi della griglia
-			if (nextX < 0 || nextX >= griglia.getColumnCount()) {
-				System.out.println(RED+"MOVE: Non permesso, fuori griglia.\nMOVE: "+getBlockCoords());
-				return; // Interrompe il metodo: il movimento è vietato
+			// 1. DEFINIAMO L'OFFSET (Spostamento)
+			// Invece del ternario, usiamo un if per decidere se sommare 1 o -1
+			int offset;
+
+			if (direction) {
+
+				offset = -1; // Sinistra
+
+			} else {
+
+				offset = 1; // Destra
 			}
 
-			// Controllo se la cella di destinazione è già occupata
-			if (occupied[currentY][nextX]) {
-				System.out.println(GREEN+ "[END]"+YELLOW+" Raggiunta fine, conferma: "+getBlockCoords());
-				return; // Interrompe il metodo: c'è un ostacolo
+			// 2. FASE DI CONTROLLO (POSSO MUOVERMI?)
+			// Cicliamo su ogni quadratino della rotazione attuale
+			for (int j = 0; j < posX[rotazione].length; j++) {
+
+				int nextX = posX[rotazione][j] + offset;
+				int currentY = posY[rotazione][j];
+
+				// Controllo se esce dai bordi della griglia
+				if (nextX < 0 || nextX >= griglia.getColumnCount()) {
+
+					System.out.println(RED + "MOVE: Non permesso, fuori griglia.\nMOVE: " + getBlockCoords());
+					return; // Interrompe il metodo: il movimento è vietato
+				}
+
+				// Controllo se la cella di destinazione è già occupata
+				if (occupied[currentY][nextX]) {
+
+					System.out.println(GREEN + "[END]" + YELLOW + " Raggiunta fine, conferma: " + getBlockCoords());
+					return; // Interrompe il metodo: c'è un ostacolo
+				}
 			}
-		}
 
-		// 3. FASE DI AGGIORNAMENTO (ESEGUIAMO IL MOVIMENTO)
-		// Se siamo arrivati qui, significa che il controllo sopra non ha mai colpito il "return"
+			// 3. FASE DI AGGIORNAMENTO (ESEGUIAMO IL MOVIMENTO)
+			// Se siamo arrivati qui, significa che il controllo sopra non ha mai colpito il
+			// "return"
 
-		dispose(); // Cancelliamo il blocco dalla vecchia posizione grafica
+			dispose(); // Cancelliamo il blocco dalla vecchia posizione grafica
 
-		// Aggiorniamo le coordinate X per TUTTE le rotazioni possibili del pezzo
-		for (int i = 0; i < posX.length; i++) {
-			for (int j = 0; j < posX[i].length; j++) {
-				posX[i][j] = posX[i][j] + offset;
+			// Aggiorniamo le coordinate X per TUTTE le rotazioni possibili del pezzo
+			for (int i = 0; i < posX.length; i++) {
+
+				for (int j = 0; j < posX[i].length; j++) {
+
+					posX[i][j] = posX[i][j] + offset;
+				}
 			}
+
+			draw(); // Ridisegniamo il blocco nella nuova posizione
 		}
-		draw(); // Ridisegniamo il blocco nella nuova posizione
 	}
 
 	// Metodo per far cadere il blocco
@@ -95,11 +111,13 @@ public class Blocco {
 
 			if ((posY[rotazione][i] + 1) >= griglia.getRowCount()
 					|| occupied[posY[rotazione][i] + 1][posX[rotazione][i]]) {
+
 				isFalling = false;
 
 				// Imposto che le celle sono occupate
 				for (int j = 0; j < posY[rotazione].length; j++)
 					occupied[posY[rotazione][j]][posX[rotazione][j]] = true;
+
 				return;
 			}
 
@@ -113,63 +131,84 @@ public class Blocco {
 			editPosY();
 
 			// Disegno il nuovo blocco
-			System.out.println(YELLOW+"FALL: "+getBlockCoords());
+			System.out.println(YELLOW + "FALL: " + getBlockCoords());
 			draw();
 		}
 	}
 
 	public void rotate() {
 
-		int toRotate = (rotazione + 1) % posX.length;
-		boolean occupation = false; // controlla se vuoto
-		for (int i = 0; i < posY[rotazione].length; i++) {
-			if(posX[toRotate][i]<0 || posX[toRotate][i]>= griglia.getColumnCount()){
-				System.out.println(RED+"[!] ROTATE: "+YELLOW+rotazione+" -> "+rotazione+" (fuori griglia)");
-			}
-			if (occupied[posY[toRotate][i]][posX[toRotate][i]]) {
-				occupation = true;
-				System.out.println(RED+"[!] ROTATE: "+YELLOW+rotazione+" -> "+rotazione+" (occupato)");
-			}
-		}
+		if (!confirmed) {
 
-		if (!occupation) {
+			int toRotate = (rotazione + 1) % posX.length;
+			boolean occupation = false; // controlla se vuoto
 
-			// TODO togli sysout
-			System.out.println(YELLOW+"ROTATE: " +GREEN+ rotazione + " -> " + toRotate+RESET);
-			isFalling = false;
-			dispose();
-			rotazione = toRotate;
-			draw();
-			isFalling = true;
+			for (int i = 0; i < posY[rotazione].length; i++) {
+
+				if (posX[toRotate][i] < 0 || posX[toRotate][i] >= griglia.getColumnCount()) {
+
+					System.out.println(
+							RED + "[!] ROTATE: " + YELLOW + rotazione + " -> " + rotazione + " (fuori griglia)");
+				}
+
+				if (occupied[posY[toRotate][i]][posX[toRotate][i]]) {
+
+					occupation = true;
+					System.out.println(RED + "[!] ROTATE: " + YELLOW + rotazione + " -> " + rotazione + " (occupato)");
+				}
+			}
+
+			if (!occupation) {
+
+				System.out.println(YELLOW + "ROTATE: " + GREEN + rotazione + " -> " + toRotate + RESET);
+				isFalling = false;
+				dispose();
+				rotazione = toRotate;
+				draw();
+				isFalling = true;
+			}
 		}
 	}
 
 	// TODO: finire i tre metodi quando fatti togli sysout
 	public void moveDown() {
-		System.out.println(YELLOW+"DOWN: "+getBlockCoords());
-		fall();
+
+		if (!confirmed) {
+
+			System.out.println(YELLOW + "DOWN: " + getBlockCoords());
+			fall();
+		}
 	}
 
 	public void confirm() {
-		for(int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++)
+
+		confirmed = true;
+
+		for (int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++)
 			fall();
-		System.out.println(YELLOW+"CONFIRM: "+getBlockCoords());
+
+		System.out.println(YELLOW + "CONFIRM: " + getBlockCoords());
 	}
 
 	public void moveLeft() {
-		System.out.println(YELLOW+"LEFT: "+getBlockCoords());
+
+		System.out.println(YELLOW + "LEFT: " + getBlockCoords());
 		editPosX(true);
 	}
 
 	public void moveRight() {
-		System.out.println(YELLOW+"RIGHT: "+getBlockCoords());
+
+		System.out.println(YELLOW + "RIGHT: " + getBlockCoords());
 		editPosX(false);
 	}
 
 	public boolean getIsFalling() {
+
 		return this.isFalling;
 	}
-	public String getBlockCoords(){
-		return RED+"[POSIZIONE BLOCCO]"+GREEN+" X:"+posX[rotazione][0]+" Y:"+posY[rotazione][0]+RESET;
+
+	public String getBlockCoords() {
+
+		return RED + "[POSIZIONE BLOCCO]" + GREEN + " X:" + posX[rotazione][0] + " Y:" + posY[rotazione][0] + RESET;
 	}
 }
