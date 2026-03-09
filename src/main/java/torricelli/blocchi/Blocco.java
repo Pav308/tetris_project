@@ -171,23 +171,32 @@ public class Blocco {
 	}
 
 	// TODO: finire i tre metodi quando fatti togli sysout
-	public void moveDown() {
+	public int moveDown() {
 
+		int punti = 0;
 		if (!confirmed) {
 
 			System.out.println(YELLOW + "DOWN: " + getBlockCoords());
+			punti ++;
 			fall();
 		}
+		
+		return punti;
 	}
 
-	public void confirm() {
+	public int confirm() {
 
+		int punti = 0;
 		confirmed = true;
 
-		for (int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++)
+		for (int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++) {
+			
+			punti += 2;
 			fall();
+		}
 
 		System.out.println(YELLOW + "CONFIRM: " + getBlockCoords());
+		return punti;
 	}
 
 	public void moveLeft() {
