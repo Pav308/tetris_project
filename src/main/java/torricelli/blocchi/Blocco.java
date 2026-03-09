@@ -211,4 +211,9 @@ public class Blocco {
 
 		return RED + "[POSIZIONE BLOCCO]" + GREEN + " X:" + posX[rotazione][0] + " Y:" + posY[rotazione][0] + RESET;
 	}
+	//Metodi per FXML Controller
+	public Pane[] getPanes() { return pane; }
+	public int[][] getPosX() { return posX; }
+	public int[][] getPosY() { return posY; }
+	public int getRotazione() { return rotazione; }
 }
