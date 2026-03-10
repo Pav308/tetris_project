@@ -14,14 +14,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import torricelli.blocchi.Blocco;
-import torricelli.blocchi.Ldestra;
-import torricelli.blocchi.Lsinistra;
-import torricelli.blocchi.Lungo;
-import torricelli.blocchi.Punta;
-import torricelli.blocchi.Quadrato;
-import torricelli.blocchi.Zdestra;
-import torricelli.blocchi.Zsinistra;
+import org.w3c.dom.Text;
+import torricelli.blocchi.*;
 
 public class FXMLController implements Initializable {
 
@@ -35,10 +29,15 @@ public class FXMLController implements Initializable {
 	private boolean gameOver = false;
 	private boolean isAnimating = false; // Per bloccare il gioco durante i flash
 	private boolean[][] occupied;
+	private Timeline timeline;
+	private int highscore;
+	private final String GREEN = "\u001B[32m";
+	private final String YELLOW = "\u001B[33m";
+	private final String RED = "\u001B[31m";
+	private final String RESET = "\u001B[0m";
 
 	@FXML
 	private GridPane mainGrid;
-
 	@FXML
 	private GridPane nextBlockGrid;
 
@@ -113,18 +112,23 @@ public class FXMLController implements Initializable {
 	public void game() {
 
 		punteggio = 0;
+		highscore = TextUtility.HighScoreManager.loadHighScore();
 		linee = 0;
 		speed = 1000;
 		updateScore();
 		spawnBlock();
-		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> {
+		timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> {
 
 			if(gameOver) {
-				
-				System.out.println("Hai Perso!");
-				return;
-			}
+				if(punteggio>highscore){
+					punteggio = highscore;
+					TextUtility.HighScoreManager.saveHighScore(punteggio);
+				}
 
+				System.out.println(RED+"[FINE PROGRAMMA]"+YELLOW+" Utente ha perso."+GREEN+" Score: "+punteggio+" High score: "+highscore);
+				timeline.stop();
+				System.exit(0);
+			}else{
 			// Se stiamo animando o cancellando linee, il timer non fa nulla
 			if (isAnimating)
 				return;
@@ -141,6 +145,7 @@ public class FXMLController implements Initializable {
 
 				// Controlliamo se ci sono linee da eliminare
 				checkAndClearLines();
+			}
 			}
 		}));
 
@@ -232,6 +237,7 @@ public class FXMLController implements Initializable {
 	}
 
 	private void animateAndRemoveLine(int row) {
+		System.out.println(YELLOW+"DEL: "+RED+"Eliminazione riga "+row+RESET);
 
 		isAnimating = true;
 		final int r = row;
@@ -304,9 +310,7 @@ public class FXMLController implements Initializable {
 	}
 
 	public void spawnBlock() {
-
 		switch (rand.nextInt(7)) {
-
 		case 0:
 
 			blocco = new Punta(mainGrid, occupied);
@@ -342,10 +346,7 @@ public class FXMLController implements Initializable {
 			blocco = new Zdestra(mainGrid, occupied);
 			break;
 		}
-
-		String GREEN = "\u001B[32m";
-		String YELLOW = "\u001B[33m";
-		System.out.println(YELLOW + "[SPAWN]" + GREEN + " Spawn di un blocco di tipo: " + blocco.getClass().getName());
+		System.out.println(YELLOW + "[SPAWN]" + GREEN + " Spawn di un blocco di tipo: " + blocco.getClass().getName()+RESET);
 		blocco.draw();
 		gameOver = blocco.checkSpawn();
 	}
