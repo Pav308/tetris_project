@@ -26,8 +26,10 @@ public class Blocco {
 	// Metodo per "disegnare" il blocco
 	public void draw() {
 
-		for (int i = 0; i < pane.length; i++)
+		for (int i = 0; i < pane.length; i++) {
+
 			griglia.add(pane[i], posX[rotazione][i], posY[rotazione][i]);
+		}
 	}
 
 	// Metodo per "cancellare" il blocco
@@ -113,6 +115,7 @@ public class Blocco {
 					|| occupied[posY[rotazione][i] + 1][posX[rotazione][i]]) {
 
 				isFalling = false;
+				confirmed = true;
 
 				// Imposto che le celle sono occupate
 				for (int j = 0; j < posY[rotazione].length; j++)
@@ -149,8 +152,10 @@ public class Blocco {
 
 					System.out.println(
 							RED + "[!] ROTATE: " + YELLOW + rotazione + " -> " + rotazione + " (fuori griglia)");
-				}
 
+					return;
+				}
+				
 				if (occupied[posY[toRotate][i]][posX[toRotate][i]]) {
 
 					occupation = true;
@@ -177,10 +182,10 @@ public class Blocco {
 		if (!confirmed) {
 
 			System.out.println(YELLOW + "DOWN: " + getBlockCoords());
-			punti ++;
+			punti++;
 			fall();
 		}
-		
+
 		return punti;
 	}
 
@@ -190,7 +195,7 @@ public class Blocco {
 		confirmed = true;
 
 		for (int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++) {
-			
+
 			punti += 2;
 			fall();
 		}
@@ -220,9 +225,21 @@ public class Blocco {
 
 		return RED + "[POSIZIONE BLOCCO]" + GREEN + " X:" + posX[rotazione][0] + " Y:" + posY[rotazione][0] + RESET;
 	}
-	//Metodi per FXML Controller
-	public Pane[] getPanes() { return pane; }
-	public int[][] getPosX() { return posX; }
-	public int[][] getPosY() { return posY; }
-	public int getRotazione() { return rotazione; }
+
+	// Metodi per FXML Controller
+	public Pane[] getPanes() {
+		return pane;
+	}
+
+	public int[][] getPosX() {
+		return posX;
+	}
+
+	public int[][] getPosY() {
+		return posY;
+	}
+
+	public int getRotazione() {
+		return rotazione;
+	}
 }

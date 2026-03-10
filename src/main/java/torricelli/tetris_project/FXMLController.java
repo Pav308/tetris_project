@@ -32,6 +32,7 @@ public class FXMLController implements Initializable {
 	private int linee = 0;
 	private int lineeTemp = 0;
 	private int speed = 1000;
+	private boolean gameOver = false;
 	private boolean isAnimating = false; // Per bloccare il gioco durante i flash
 	private boolean[][] occupied;
 
