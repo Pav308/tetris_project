@@ -56,32 +56,32 @@ public class FXMLController implements Initializable {
 
 		KeyCode code = event.getCode();
 
-		if (code == KeyCode.UP) {
+		if (code == KeyCode.UP && !gameOver) {
 
 			// Ruota il blocco
 			blocco.rotate();
 		}
 
-		if (code == KeyCode.DOWN) {
+		if (code == KeyCode.DOWN && !gameOver) {
 
 			// Conferma il blocco
 			punteggio += blocco.moveDown();
 			updateScore();
 		}
 
-		if (code == KeyCode.LEFT) {
+		if (code == KeyCode.LEFT && !gameOver) {
 
 			// Sposta a sinistra il blocco
 			blocco.moveLeft();
 		}
 
-		if (code == KeyCode.RIGHT) {
+		if (code == KeyCode.RIGHT && !gameOver) {
 
 			// Sposta a destra il blocco
 			blocco.moveRight();
 		}
 
-		if (code == KeyCode.SPACE) {
+		if (code == KeyCode.SPACE && !gameOver) {
 
 			punteggio += blocco.confirm();
 			updateScore();
@@ -119,6 +119,12 @@ public class FXMLController implements Initializable {
 		spawnBlock();
 		Timeline timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> {
 
+			if(gameOver) {
+				
+				System.out.println("Hai Perso!");
+				return;
+			}
+
 			// Se stiamo animando o cancellando linee, il timer non fa nulla
 			if (isAnimating)
 				return;
@@ -132,6 +138,7 @@ public class FXMLController implements Initializable {
 
 				// Quando il blocco si ferma, lo registriamo nella matrice gridNodes
 				registerBlockInGrid();
+
 				// Controlliamo se ci sono linee da eliminare
 				checkAndClearLines();
 			}
@@ -340,6 +347,7 @@ public class FXMLController implements Initializable {
 		String YELLOW = "\u001B[33m";
 		System.out.println(YELLOW + "[SPAWN]" + GREEN + " Spawn di un blocco di tipo: " + blocco.getClass().getName());
 		blocco.draw();
+		gameOver = blocco.checkSpawn();
 	}
 
 	public void updateScore() {

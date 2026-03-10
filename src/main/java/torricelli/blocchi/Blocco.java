@@ -155,7 +155,7 @@ public class Blocco {
 
 					return;
 				}
-				
+
 				if (occupied[posY[toRotate][i]][posX[toRotate][i]]) {
 
 					occupation = true;
@@ -226,20 +226,40 @@ public class Blocco {
 		return RED + "[POSIZIONE BLOCCO]" + GREEN + " X:" + posX[rotazione][0] + " Y:" + posY[rotazione][0] + RESET;
 	}
 
+	public boolean checkSpawn() {
+
+		boolean gameOver = false;
+
+		for (int i = 0; i < pane.length; i++) {
+
+			if (occupied[posY[rotazione][i]][posX[rotazione][i]]) {
+
+				gameOver = true;
+				System.out.println(RED + "[!] ROTATE: " + YELLOW + rotazione + " -> " + rotazione + " (occupato)");
+			}
+		}
+
+		return gameOver;
+	}
+
 	// Metodi per FXML Controller
 	public Pane[] getPanes() {
+
 		return pane;
 	}
 
 	public int[][] getPosX() {
+
 		return posX;
 	}
 
 	public int[][] getPosY() {
+
 		return posY;
 	}
 
 	public int getRotazione() {
+
 		return rotazione;
 	}
 }
