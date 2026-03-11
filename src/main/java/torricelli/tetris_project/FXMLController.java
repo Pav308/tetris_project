@@ -153,7 +153,6 @@ public class FXMLController implements Initializable {
 		gameOver = false;
 		isAnimating = false; // Per bloccare il gioco durante i flash
 		titolo.setText("TETRISFX");
-		titolo.setStyle("-fx-font-size: 48px");
 
 		punteggio = 0;
 		linee = 0;
@@ -194,9 +193,7 @@ public class FXMLController implements Initializable {
 
 			System.out.println(RED + "[FINE PROGRAMMA]" + YELLOW + " Utente ha perso." + GREEN + " Score: " + punteggio
 					+ " High score: " + highscoreint + RESET);
-
 			titolo.setText("HAI PERSO!");
-			titolo.setStyle("-fx-font-size: 39px");
 			timeline.stop();
 
 		} else {
