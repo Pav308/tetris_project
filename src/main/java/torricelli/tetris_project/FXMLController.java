@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 import torricelli.blocchi.*;
 
@@ -43,9 +44,13 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private GridPane mainGrid;
+	
 	@FXML
 	private GridPane nextBlockGrid;
 
+    @FXML
+    private Label highScore;
+    
 	@FXML
 	private Label punteggioLines;
 
@@ -95,6 +100,7 @@ public class FXMLController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 
+		Font.loadFont(getClass().getResource("/fonts/PressStart2P-Regular.ttf").toExternalForm(), 12);
 		mainGrid.setFocusTraversable(true);
 
 		// Registro l'handler UNA SOLA VOLTA
@@ -378,9 +384,10 @@ public class FXMLController implements Initializable {
 	public void updateLabels() {
 
 		// Cambio tutti i label
-		punteggioScore.setText("Score: " + punteggio);
-		punteggioLines.setText("Lines: " + linee);
-		punteggioSpeed.setText("Speed: " + speed);
+		punteggioScore.setText(" Score: " + punteggio);
+		punteggioLines.setText(" Lines: " + linee);
+		punteggioSpeed.setText(" Speed: " + speed);
+		highScore.setText(" High score: " + highscore);
 	}
 
 	public void changeLevel() {
