@@ -14,7 +14,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import org.w3c.dom.Text;
 import torricelli.blocchi.*;
 
 public class FXMLController implements Initializable {
@@ -22,15 +21,21 @@ public class FXMLController implements Initializable {
 	private final Random rand = new Random();
 	private Pane[][] gridNodes; // Per gestire i riferimenti ai quadratini
 	private Blocco blocco;
-	private int punteggio = 0;
+	private Timeline timeline;
+
+	private long punteggio = 0;
+
+	private int level = 0;
 	private int linee = 0;
 	private int lineeTemp = 0;
 	private int speed = 1000;
+	private int changeSpeed = 200;
+	private int highscore;
+
 	private boolean gameOver = false;
 	private boolean isAnimating = false; // Per bloccare il gioco durante i flash
 	private boolean[][] occupied;
-	private Timeline timeline;
-	private int highscore;
+
 	private final String GREEN = "\u001B[32m";
 	private final String YELLOW = "\u001B[33m";
 	private final String RED = "\u001B[31m";
@@ -65,7 +70,7 @@ public class FXMLController implements Initializable {
 
 			// Conferma il blocco
 			punteggio += blocco.moveDown();
-			updateScore();
+			updateLabels();
 		}
 
 		if (code == KeyCode.LEFT && !gameOver) {
@@ -83,7 +88,7 @@ public class FXMLController implements Initializable {
 		if (code == KeyCode.SPACE && !gameOver) {
 
 			punteggio += blocco.confirm();
-			updateScore();
+			updateLabels();
 		}
 	}
 
@@ -97,38 +102,50 @@ public class FXMLController implements Initializable {
 
 		// Forzo il focus sulla griglia
 		mainGrid.requestFocus();
-		
+
 		// Inizializza le matrici
 		gridNodes = new Pane[mainGrid.getRowCount()][mainGrid.getColumnCount()];
 		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
-		
+
 		// Aggiunge false alla matrice occupied a tutti gli elementi
 		for (boolean[] booleans : occupied)
 			Arrays.fill(booleans, false);
-		
+
 		game();
 	}
 
 	public void game() {
 
 		punteggio = 0;
-		highscore = TextUtility.HighScoreManager.loadHighScore();
 		linee = 0;
+		level = 0;
 		speed = 1000;
-		updateScore();
+
+		updateLabels();
 		spawnBlock();
-		timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> {
 
-			if(gameOver) {
-				if(punteggio>highscore){
-					punteggio = highscore;
-					TextUtility.HighScoreManager.saveHighScore(punteggio);
-				}
+		// Timer che richiama il gameTick
+		timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> gameTick()));
 
-				System.out.println(RED+"[FINE PROGRAMMA]"+YELLOW+" Utente ha perso."+GREEN+" Score: "+punteggio+" High score: "+highscore);
-				timeline.stop();
-				System.exit(0);
-			}else{
+		timeline.setCycleCount(Timeline.INDEFINITE);
+
+		// Timer infinito che continua
+		timeline.play();
+	}
+
+	private void gameTick() {
+
+		// TODO: schermata game over
+		if (gameOver) {
+
+			System.out.println(RED + "[FINE PROGRAMMA]" + YELLOW + " Utente ha perso." + GREEN + " Score: "
+					+ punteggio + " High score: " + highscore + RESET);
+
+			timeline.stop();
+			System.exit(0);
+
+		} else {
+
 			// Se stiamo animando o cancellando linee, il timer non fa nulla
 			if (isAnimating)
 				return;
@@ -145,14 +162,9 @@ public class FXMLController implements Initializable {
 
 				// Controlliamo se ci sono linee da eliminare
 				checkAndClearLines();
-			}
-			}
-		}));
 
-		timeline.setCycleCount(Timeline.INDEFINITE);
-
-		// Timer infinito che continua
-		timeline.play();
+			}
+		}
 	}
 
 	private void registerBlockInGrid() {
@@ -200,44 +212,52 @@ public class FXMLController implements Initializable {
 			}
 		}
 
-		switch(lineeTemp) {
-		
+		switch (lineeTemp) {
+
 		case 0:
-			
+
 			punteggio += 0;
 			break;
-			
+
 		case 1:
-			
-			punteggio += 40;
+
+			punteggio += 40 * (level + 1);
 			break;
-			
+
 		case 2:
-			
-			punteggio += 100;
+
+			punteggio += 100 * (level + 1);
 			break;
-			
+
 		case 3:
-			
-			punteggio += 300;
+
+			punteggio += 300 * (level + 1);
 			break;
-			
+
 		case 4:
-			
-			punteggio += 1200;
+
+			punteggio += 1200 * (level + 1);
 			break;
 		}
-		
+
 		linee += lineeTemp;
 		lineeTemp = 0;
-		updateScore();
-		
+
+		// Cambia livello ogni 10 linee
+		if (linee / 10 > level) {
+
+			changeLevel();
+		}
+
+		updateLabels();
+
 		// Se non ci sono righe piene, spawna il prossimo blocco
 		spawnBlock();
 	}
 
 	private void animateAndRemoveLine(int row) {
-		System.out.println(YELLOW+"DEL: "+RED+"Eliminazione riga "+row+RESET);
+
+		System.out.println(YELLOW + "DEL: " + RED + "Eliminazione riga " + row + RESET);
 
 		isAnimating = true;
 		final int r = row;
@@ -310,7 +330,9 @@ public class FXMLController implements Initializable {
 	}
 
 	public void spawnBlock() {
+
 		switch (rand.nextInt(7)) {
+
 		case 0:
 
 			blocco = new Punta(mainGrid, occupied);
@@ -346,15 +368,41 @@ public class FXMLController implements Initializable {
 			blocco = new Zdestra(mainGrid, occupied);
 			break;
 		}
-		System.out.println(YELLOW + "[SPAWN]" + GREEN + " Spawn di un blocco di tipo: " + blocco.getClass().getName()+RESET);
+
+		System.out.println(
+				YELLOW + "[SPAWN]" + GREEN + " Spawn di un blocco di tipo: " + blocco.getClass().getName() + RESET);
 		blocco.draw();
 		gameOver = blocco.checkSpawn();
 	}
 
-	public void updateScore() {
+	public void updateLabels() {
 
+		// Cambio tutti i label
 		punteggioScore.setText("Score: " + punteggio);
 		punteggioLines.setText("Lines: " + linee);
 		punteggioSpeed.setText("Speed: " + speed);
+	}
+
+	public void changeLevel() {
+
+		// Aumento il livello
+		level++;
+
+		// Aumento la velocità
+		speed -= changeSpeed;
+
+		// Non può diminuire sotto il cento
+		if (speed < 100)
+			speed = 100;
+
+		// Ricrea la timeline con la nuova velocità
+		timeline.stop();
+
+		timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> gameTick()));
+		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.play();
+
+		// Aggiorno i labels
+		updateLabels();
 	}
 }
