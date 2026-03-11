@@ -7,7 +7,7 @@ public class TextUtility {
         private static final String FILE_NAME = "highscore.txt";
 
         // Salva il punteggio sul file
-        public static void saveHighScore(int score) {
+        public static void saveHighScore(long score) {
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
 

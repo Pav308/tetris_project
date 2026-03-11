@@ -30,7 +30,7 @@ public class FXMLController implements Initializable {
 	private int lineeTemp = 0;
 	private int speed = 1000;
 	private int changeSpeed = 200;
-	private int highscore;
+	private long highscoreint;
 
 	// --- VARIABILI AGGIUNTE ---
 	private int prossimoTipo = -1; // Memorizza l'indice del blocco che arriverà dopo
@@ -47,8 +47,12 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private GridPane mainGrid;
+
 	@FXML
 	private GridPane nextBlockGrid;
+
+	@FXML
+	private Label highScore;
 
 	@FXML
 	private Label punteggioLines;
@@ -70,6 +74,9 @@ public class FXMLController implements Initializable {
 
 		if (code == KeyCode.DOWN && !gameOver) {
 			punteggio += blocco.moveDown();
+			if(checkhighscore()){
+				highscoreint=punteggio;
+			}
 			updateLabels();
 		}
 
@@ -83,6 +90,9 @@ public class FXMLController implements Initializable {
 
 		if (code == KeyCode.SPACE && !gameOver) {
 			punteggio += blocco.confirm();
+			if(checkhighscore()){
+				highscoreint=punteggio;
+			}
 			updateLabels();
 		}
 	}
@@ -114,6 +124,7 @@ public class FXMLController implements Initializable {
 		linee = 0;
 		level = 0;
 		speed = 1000;
+		highscoreint = TextUtility.HighScoreManager.loadHighScore();
 
 		updateLabels();
 		spawnBlock();
@@ -124,10 +135,13 @@ public class FXMLController implements Initializable {
 	}
 
 	private void gameTick() {
-
 		if (gameOver) {
+			if(punteggio == highscoreint){
+				System.out.println(GREEN+"NEW HIGH SCORE!"+RESET);
+				TextUtility.HighScoreManager.saveHighScore(highscoreint);
+			}
 			System.out.println(RED + "[FINE PROGRAMMA]" + YELLOW + " Utente ha perso." + GREEN + " Score: "
-					+ punteggio + " High score: " + highscore + RESET);
+					+ punteggio + " High score: " + highscoreint + RESET);
 			timeline.stop();
 			System.exit(0);
 		} else {
@@ -177,10 +191,10 @@ public class FXMLController implements Initializable {
 		}
 
 		switch (lineeTemp) {
-			case 1: punteggio += 40 * (level + 1); break;
-			case 2: punteggio += 100 * (level + 1); break;
-			case 3: punteggio += 300 * (level + 1); break;
-			case 4: punteggio += 1200 * (level + 1); break;
+			case 1: punteggio += (long)40 * (level + 1); break;
+			case 2: punteggio += (long)100 * (level + 1); break;
+			case 3: punteggio += (long)300 * (level + 1); break;
+			case 4: punteggio += (long)1200 * (level + 1); break;
 		}
 
 		linee += lineeTemp;
@@ -189,9 +203,14 @@ public class FXMLController implements Initializable {
 		if (linee / 10 > level) {
 			changeLevel();
 		}
-
+		if(checkhighscore()){
+			highscoreint = punteggio;
+		}
 		updateLabels();
 		spawnBlock();
+	}
+	private boolean checkhighscore(){
+		return (punteggio>highscoreint);
 	}
 
 	private void animateAndRemoveLine(int row) {
@@ -267,9 +286,10 @@ public class FXMLController implements Initializable {
 	}
 
 	public void updateLabels() {
-		punteggioScore.setText("Score: " + punteggio);
-		punteggioLines.setText("Lines: " + linee);
-		punteggioSpeed.setText("Speed: " + speed);
+		punteggioScore.setText(" Score: " + punteggio);
+		punteggioLines.setText(" Lines: " + linee);
+		punteggioSpeed.setText(" Speed: " + speed);
+		highScore.setText(" HIGH: "+ highscoreint);
 	}
 
 	public void changeLevel() {

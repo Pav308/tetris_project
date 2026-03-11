@@ -192,14 +192,14 @@ public class Blocco {
 	public int confirm() {
 
 		int punti = 0;
-		confirmed = true;
 
-		for (int i = posY[rotazione][3]; i <= griglia.getRowCount(); i++) {
+
+		for (int i = posY[rotazione][3]; i <= griglia.getRowCount() && !confirmed; i++) {
 
 			punti += 2;
 			fall();
 		}
-
+		confirmed = true;
 		System.out.println(YELLOW + "CONFIRM: " + getBlockCoords());
 		return punti;
 	}
