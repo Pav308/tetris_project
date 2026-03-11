@@ -1,3 +1,14 @@
-.button {
-    -fx-font-weight: bold;
+@font-face {
+    font-family: "Press Start 2P";
+    src: url("../fonts/PressStart2P-Regular.ttf");
+}
+
+.testo {
+    -fx-font-family: "Press Start 2P";
+	-fx-font-size: 10px;
+}
+
+.titolo {
+    -fx-font-family: "Press Start 2P";
+	-fx-font-size: 48;
 }

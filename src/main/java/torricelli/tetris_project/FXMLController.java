@@ -47,8 +47,12 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private GridPane mainGrid;
+
 	@FXML
 	private GridPane nextBlockGrid;
+
+	@FXML
+	private Label highScore;
 
 	@FXML
 	private Label punteggioLines;
@@ -177,10 +181,10 @@ public class FXMLController implements Initializable {
 		}
 
 		switch (lineeTemp) {
-			case 1: punteggio += 40 * (level + 1); break;
-			case 2: punteggio += 100 * (level + 1); break;
-			case 3: punteggio += 300 * (level + 1); break;
-			case 4: punteggio += 1200 * (level + 1); break;
+			case 1: punteggio += (long)40 * (level + 1); break;
+			case 2: punteggio += (long)100 * (level + 1); break;
+			case 3: punteggio += (long)300 * (level + 1); break;
+			case 4: punteggio += (long)1200 * (level + 1); break;
 		}
 
 		linee += lineeTemp;
@@ -267,9 +271,10 @@ public class FXMLController implements Initializable {
 	}
 
 	public void updateLabels() {
-		punteggioScore.setText("Score: " + punteggio);
-		punteggioLines.setText("Lines: " + linee);
-		punteggioSpeed.setText("Speed: " + speed);
+		punteggioScore.setText(" Score: " + punteggio);
+		punteggioLines.setText(" Lines: " + linee);
+		punteggioSpeed.setText(" Speed: " + speed);
+		highScore.setText(" HIGH: "+ highscore);
 	}
 
 	public void changeLevel() {
