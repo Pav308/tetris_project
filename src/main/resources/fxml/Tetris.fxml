@@ -11,7 +11,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: darkgray;" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="torricelli.tetris_project.FXMLController">
    <top>
-      <Label alignment="CENTER" styleClass="titolo" text="TETRIS" BorderPane.alignment="CENTER">
+      <Label fx:id="titolo" alignment="CENTER" styleClass="titolo" text="TETRIS" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets right="150.0" top="20.0" />
          </BorderPane.margin>
