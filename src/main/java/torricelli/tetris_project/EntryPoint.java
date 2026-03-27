@@ -1,24 +1,18 @@
 package torricelli.tetris_project;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
 public class EntryPoint extends Application {
 
-    @Override
+	public static SceneManager sm;
+    
+	@Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Tetris.fxml"));
-        
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
-
-        stage.setTitle("TetrisFX");
-        stage.setScene(scene);
-        stage.show();
+    	
+    	sm = new SceneManager(stage);
+    	sm.loadMenu();
     }
 
     /**

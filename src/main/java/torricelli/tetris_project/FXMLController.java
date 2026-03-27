@@ -26,8 +26,8 @@ import torricelli.blocchi.*;
 
 public class FXMLController implements Initializable {
 
-    private static final Logger log = LoggerFactory.getLogger(FXMLController.class);
-    private final Random rand = new Random();
+	private static final Logger log = LoggerFactory.getLogger(FXMLController.class);
+	private final Random rand = new Random();
 	private Pane[][] gridNodes; // Per gestire i riferimenti ai quadratini
 	private Blocco blocco;
 	private Timeline timeline;
@@ -48,7 +48,7 @@ public class FXMLController implements Initializable {
 
 	private final String GREEN = "\u001B[32m";
 	private final String YELLOW = "\u001B[33m";
-    private final String RESET = "\u001B[0m";
+	private final String RESET = "\u001B[0m";
 
 	@FXML
 	private GridPane mainGrid;
@@ -115,6 +115,12 @@ public class FXMLController implements Initializable {
 
 			gameStart();
 		}
+
+		if (code == KeyCode.Q) {
+
+			EntryPoint.sm.loadMenu();
+			gameOver = true;
+		}
 	}
 
 	@Override
@@ -127,15 +133,15 @@ public class FXMLController implements Initializable {
 		try {
 
 			// Prendo la musica
-			AudioInputStream audio = AudioSystem
-					.getAudioInputStream(Objects.requireNonNull(getClass().getResource("/audio/Tetris-Theme-Piano.wav")));
+			AudioInputStream audio = AudioSystem.getAudioInputStream(
+					Objects.requireNonNull(getClass().getResource("/audio/Tetris-Theme-Piano.wav")));
 
 			musica = AudioSystem.getClip();
 			musica.open(audio);
 
 		} catch (Exception e) {
 			log.error("ERRORE CARICAMENTO MUSICA: ", (e));
-        }
+		}
 
 		gameStart();
 	}
@@ -174,12 +180,12 @@ public class FXMLController implements Initializable {
 
 		updateLabels();
 		spawnBlock();
-		
-		startMusic();
 
 		timeline = new Timeline(new KeyFrame(Duration.millis(speed), e -> gameTick()));
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
+
+		startMusic();
 	}
 
 	private void gameTick() {
@@ -187,18 +193,18 @@ public class FXMLController implements Initializable {
 		if (gameOver) {
 
 			stopMusic();
-			
+
 			if (punteggio == highscoreint) {
 
 				System.out.println(GREEN + "NEW HIGH SCORE!" + RESET);
 				TextUtility.HighScoreManager.saveHighScore(highscoreint);
 			}
 
-            String RED = "\u001B[31m";
-            System.out.println(RED + "[FINE PROGRAMMA]" + YELLOW + " Utente ha perso." + GREEN + " Score: " + punteggio
+			String RED = "\u001B[31m";
+			System.out.println(RED + "[FINE PROGRAMMA]" + YELLOW + " Utente ha perso." + GREEN + " Score: " + punteggio
 					+ " High score: " + highscoreint + RESET);
 			titolo.setText("HAI PERSO!");
-			titolo.setStyle("-fx-font-size: 39px");
+//			titolo.setStyle("-fx-font-size: 39px");
 			timeline.stop();
 
 		} else {
@@ -426,7 +432,7 @@ public class FXMLController implements Initializable {
 		// Aggiorno tutti le scritte di cui ho bisogno
 		punteggioScore.setText(" Score: " + punteggio);
 		punteggioLines.setText(" Lines: " + linee);
-		punteggioSpeed.setText(" Speed: " + speed+ " ms");
+		punteggioSpeed.setText(" Speed: " + speed + " ms");
 		highScore.setText(" HIGH: " + highscoreint);
 	}
 
@@ -523,17 +529,17 @@ public class FXMLController implements Initializable {
 
 		// Faccio partire la musica se esiste
 		if (musica != null) {
-			
+
 			musica.setFramePosition(0);
 			musica.loop(Clip.LOOP_CONTINUOUSLY); // loop infinito
 			musica.start();
 		}
 	}
-	
+
 	private void stopMusic() {
-	 
+
 		// Fermo la musica
 		if (musica != null && musica.isRunning())
-	        musica.stop();
+			musica.stop();
 	}
 }
