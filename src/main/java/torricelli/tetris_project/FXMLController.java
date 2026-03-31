@@ -28,7 +28,7 @@ public class FXMLController implements Initializable {
 
 	private static final Logger log = LoggerFactory.getLogger(FXMLController.class);
 	private final Random rand = new Random();
-	private Pane[][] gridNodes; // Per gestire i riferimenti ai quadratini
+	private Pane[][] gridNodes; // Gestire i riferimenti ai quadratini
 	private Blocco blocco;
 	private Timeline timeline;
 	private Clip musica;
@@ -40,7 +40,7 @@ public class FXMLController implements Initializable {
 	private int prossimoTipo = -1;
 
 	private long punteggio = 0;
-	private long highscoreint;
+	private long[] highScores = new long[5];
 
 	private boolean gameOver = false;
 	private boolean isAnimating = false; // Per bloccare il gioco durante i flash
@@ -51,16 +51,25 @@ public class FXMLController implements Initializable {
 	private final String RESET = "\u001B[0m";
 
 	@FXML
+	private Label highScore1;
+
+	@FXML
+	private Label highScore2;
+
+	@FXML
+	private Label highScore3;
+
+	@FXML
+	private Label highScore4;
+
+	@FXML
+	private Label highScore5;
+
+	@FXML
 	private GridPane mainGrid;
 
 	@FXML
 	private GridPane nextBlockGrid;
-
-	@FXML
-	private Label titolo;
-
-	@FXML
-	private Label highScore;
 
 	@FXML
 	private Label punteggioLines;
@@ -70,6 +79,10 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private Label punteggioSpeed;
+
+	@FXML
+	private Label titolo;
+
 
 	@FXML
 	void onKeyPressed(KeyEvent event) {
@@ -82,12 +95,8 @@ public class FXMLController implements Initializable {
 		}
 
 		if (code == KeyCode.DOWN && !gameOver) {
-
 			punteggio += blocco.moveDown();
-
-			if (checkhighscore())
-				highscoreint = punteggio;
-
+			updateHighScores(punteggio); // <--- Aggiungi questo
 			updateLabels();
 		}
 
@@ -102,12 +111,8 @@ public class FXMLController implements Initializable {
 		}
 
 		if (code == KeyCode.SPACE && !gameOver) {
-
 			punteggio += blocco.confirm();
-
-			if (checkhighscore())
-				highscoreint = punteggio;
-
+			updateHighScores(punteggio); // <--- Aggiungi questo
 			updateLabels();
 		}
 
@@ -167,7 +172,15 @@ public class FXMLController implements Initializable {
 		linee = 0;
 		level = 0;
 		speed = 1000;
-		highscoreint = TextUtility.HighScoreManager.loadHighScore();
+		String rawScores = TextUtility.HighScoreManager.loadHighScoresRaw();
+		String[] splitScores = rawScores.split(",");
+		for (int i = 0; i < 5; i++) {
+			if (i < splitScores.length) {
+				highScores[i] = Long.parseLong(splitScores[i].trim());
+			} else {
+				highScores[i] = 0;
+			}
+		}
 
 		gridNodes = new Pane[mainGrid.getRowCount()][mainGrid.getColumnCount()];
 		occupied = new boolean[mainGrid.getRowCount()][mainGrid.getColumnCount()];
@@ -194,18 +207,17 @@ public class FXMLController implements Initializable {
 
 			stopMusic();
 
-			if (punteggio == highscoreint) {
+			// Controlla se il punteggio entra in classifica
+			updateHighScores(punteggio);
 
-				System.out.println(GREEN + "NEW HIGH SCORE!" + RESET);
-				TextUtility.HighScoreManager.saveHighScore(highscoreint);
-			}
+			// Salva i 5 punteggi usando il metodo della TextUtility
+			TextUtility.HighScoreManager.saveHighScores(
+					highScores[0], highScores[1], highScores[2], highScores[3], highScores[4]
+			);
 
-			String RED = "\u001B[31m";
-			System.out.println(RED + "[FINE PROGRAMMA]" + YELLOW + " Utente ha perso." + GREEN + " Score: " + punteggio
-					+ " High score: " + highscoreint + RESET);
-			titolo.setText("HAI PERSO!");
-//			titolo.setStyle("-fx-font-size: 39px");
+			System.out.println(GREEN + "Classifica Aggiornata!" + RESET);
 			timeline.stop();
+			titolo.setText("HAI PERSO!");
 
 		} else {
 
@@ -302,16 +314,42 @@ public class FXMLController implements Initializable {
 			changeLevel();
 
 		// Cambio high score se è maggiore
-		if (checkhighscore())
-			highscoreint = punteggio;
-
+		updateHighScores(punteggio);
 		updateLabels();
 		spawnBlock();
 	}
 
-	private boolean checkhighscore() {
+	private boolean checkhighscore(long punt1, long punt2) {
+		return (punt1 > punt2);
+	}
+	private void updateHighScores(long currentScore) {
+		int currentIdx = -1;
 
-		return (punteggio > highscoreint);
+		// 1. Controlla se il giocatore è già presente in classifica (magari dal tick precedente)
+		for (int i = 0; i < highScores.length; i++) {
+			// Usiamo un trucco: se il punteggio è uguale, sappiamo che è "lui" che sta salendo
+			if (currentScore >= highScores[i]) {
+				currentIdx = i;
+				break;
+			}
+		}
+
+		if (currentIdx != -1) {
+			// Se il punteggio è già il primo e sta solo aumentando, aggiorna solo il valore
+			if (currentIdx == 0) {
+				highScores[0] = currentScore;
+			} else {
+				// Se sta superando qualcuno sopra di lui, effettua lo shift
+				// Shiftiamo solo se il punteggio è effettivamente maggiore del superiore
+				if (currentScore > highScores[currentIdx - 1]) {
+					long temp = highScores[currentIdx - 1];
+					highScores[currentIdx - 1] = currentScore;
+					highScores[currentIdx] = temp;
+				} else {
+					highScores[currentIdx] = currentScore;
+				}
+			}
+		}
 	}
 
 	private void animateAndRemoveLine(int row) {
@@ -433,7 +471,11 @@ public class FXMLController implements Initializable {
 		punteggioScore.setText(" Score: " + punteggio);
 		punteggioLines.setText(" Lines: " + linee);
 		punteggioSpeed.setText(" Speed: " + speed + " ms");
-		highScore.setText(" HIGH: " + highscoreint);
+		highScore1.setText(" 1st: " + highScores[0]);
+		highScore2.setText(" 2nd: " + highScores[1]);
+		highScore3.setText(" 3rd: " + highScores[2]);
+		highScore4.setText(" 4th: " + highScores[3]);
+		highScore5.setText(" 5th: " + highScores[4]);
 	}
 
 	public void changeLevel() {
